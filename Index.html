@@ -3,38 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recuperar Información</title>
+  <title>Invitación de Bodas</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+    }
+
+    .invitation {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333333;
+    }
+
+    p {
+      color: #555555;
+    }
+  </style>
 </head>
 <body>
-  <h1>Recuperar Información</h1>
+  <div class="invitation">
+    <h1>¡Invitación de Bodas!</h1>
 
-  <script>
-    function getParameterByName(name, url) {
-      if (!url) url = window.location.href;
-      name = name.replace(/[\[\]]/g, "\\$&");
-      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-          results = regex.exec(url);
-      if (!results) return null;
-      if (!results[2]) return '';
-      return decodeURIComponent(results[2].replace(/\+/g, " "));
-    }
+    <script>
+      function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+      }
 
-    function cargarDatos() {
-      var id = getParameterByName('id');
-      // Reemplaza la siguiente línea con tu enlace de hoja de cálculo
-      var url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXaiuHfFGW_mIhQYro97SvdvTCe7kZHhI2PttAp78tVSXiC00pvjtraaQwHCfycMqx9jRNvy1zkU3V/pubhtml?gid=0&single=true';
-      var apiUrl = url + '?gid=0&single=true&output=csv&id=' + id;
+      function cargarDatos() {
+        var id = getParameterByName('id');
+        // Reemplaza la siguiente línea con tu enlace de hoja de cálculo
+        var url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXaiuHfFGW_mIhQYro97SvdvTCe7kZHhI2PttAp78tVSXiC00pvjtraaQwHCfycMqx9jRNvy1zkU3V/pubhtml';
+        var apiUrl = url + '?gid=0&single=true&output=csv&id=' + id;
 
-      fetch(apiUrl)
-        .then(response => response.text())
-        .then(data => {
-          console.log(data);
-          // Actualiza tu página con la información obtenida
-        })
-        .catch(error => console.error('Error:', error));
-    }
+        fetch(apiUrl)
+          .then(response => response.text())
+          .then(data => {
+            // Parsear los datos CSV
+            var rows = data.split('\n');
+            var headers = rows[0].split(',');
+            var rowData = rows[1].split(',');
 
-    cargarDatos();
-  </script>
+            // Obtener índices de las columnas
+            var idIndex = headers.indexOf('Id');
+            var nombreIndex = headers.indexOf('Nombre');
+            var invitadosIndex = headers.indexOf('Invitados');
+
+            // Obtener los datos correspondientes al Id proporcionado
+            var idProvided = rowData[idIndex];
+            var nombre = rowData[nombreIndex];
+            var invitados = rowData[invitadosIndex];
+
+            // Actualizar la invitación con los datos
+            document.getElementById('nombre').innerText = nombre;
+            document.getElementById('invitados').innerText = invitados;
+          })
+          .catch(error => console.error('Error:', error));
+      }
+
+      cargarDatos();
+    </script>
+
+    <p>Estás cordialmente invitado/a a nuestra boda:</p>
+    <h2 id="nombre"></h2>
+    <p>Con gusto aceptamos tu presencia y esperamos con emoción que puedas unirte a nosotros en este día especial.</p>
+    <p>Número de Invitados: <span id="invitados"></span></p>
+
+    <p>¡Esperamos verte pronto!</p>
+  </div>
 </body>
 </html>
