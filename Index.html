@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recuperar Información</title>
+</head>
+<body>
+  <h1>Recuperar Información</h1>
+
+  <script>
+    function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    function cargarDatos() {
+      var id = getParameterByName('id');
+      // Reemplaza la siguiente línea con tu enlace de hoja de cálculo
+      var url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXaiuHfFGW_mIhQYro97SvdvTCe7kZHhI2PttAp78tVSXiC00pvjtraaQwHCfycMqx9jRNvy1zkU3V/pubhtml?gid=0&single=true';
+      var apiUrl = url + '?gid=0&single=true&output=csv&id=' + id;
+
+      fetch(apiUrl)
+        .then(response => response.text())
+        .then(data => {
+          console.log(data);
+          // Actualiza tu página con la información obtenida
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    cargarDatos();
+  </script>
+</body>
+</html>
